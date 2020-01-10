@@ -6,6 +6,7 @@ if (!$_SESSION['matricno']) {
 	header("location:index.php");
 }
 $matricno = $_SESSION['matricno'];
+$editSuccessfulAlert = false;
 
 $query = "select * from users where matricno = '$matricno'";
 $result = mysqli_query($conn, $query) or die("could not query database");
@@ -24,7 +25,7 @@ while ($row = mysqli_fetch_array($result)) {
 	$about1 = trim($row['about']);
 	$picture = $row['picture'];
 	$updated = strtotime($row['updated']);
-	$updated = date("F j, Y g:ia", $updated);
+	$updated2 = date("F j, Y g:ia", $updated);
 }
 
 if ($email == "") {
@@ -84,6 +85,7 @@ if ($email == "") {
 		.alert-success {
 			position: absolute;
 			margin-left: 25%;
+			min-width: 70%;
 		}
 
 		@media (max-width: 767px) {
@@ -306,11 +308,7 @@ if ($email == "") {
 			$result2 = mysqli_query($conn, $query2) or die("could not insert into database " . mysqli_error($query2));
 
 			if ($result2) {
-				echo "
-						<div class='alert alert-success'>
-						<button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>
-						Your profile has been successfully edited</a>.
-					</div>";
+				$editSuccessfulAlert = true;
 			}
 		}
 		?>
@@ -324,6 +322,16 @@ if ($email == "") {
 			</div>
 
 			<div class="col-md-8">
+				<?php
+				if ($editSuccessfulAlert == true) {
+					echo "
+							<div class='alert alert-success'>
+								<button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>
+								Your profile has been successfully edited</a>.
+							</div>	
+						";
+				}
+				?>
 				<form class="form-horizontal form-border" method="post" action="" enctype="multipart/form-data" data-parsley-validate>
 					<div class="panel-heading">
 						Basic Information
@@ -509,10 +517,10 @@ if ($email == "") {
 				<div class="panel panel-info pull-right">
 					<div class="panel-body">
 						<?php
-						if ($updated == "" || $updated == "0000-00-00 00:00:00" || empty($updated)) {
+						if ($updated == "0000-00-00 00:00:00" || $updated == "") {
 							echo "This record has never been edited";
 						} else {
-							echo "Last updated: " . $updated;
+							echo "Last updated: " . $updated2;
 						}
 						?>
 					</div>
@@ -590,7 +598,7 @@ if ($email == "") {
 			var user = <?php echo json_encode($matricno) ?>;
 			unreadMsg();
 			unreadMsg2();
-			$('.alert-success').delay(5000).fadeOut(2000);
+			$('.alert-success').delay(15000).fadeOut(2000);
 
 			function unreadMsg() {
 				$.ajax({

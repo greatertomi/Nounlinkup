@@ -8,7 +8,9 @@ include("functions.php");
 include("footer.php");
 
 $conn = db_connect();
-$showalert = false;
+$sentAlert = false;
+$sentFailedAlert = false;
+$emailNotFoundAlert = false;
 ?>
 <html>
 
@@ -32,10 +34,10 @@ $showalert = false;
     }
 
     #footerDiv {
-      position:absolute;
-      bottom:100px;
+      position: absolute;
+      bottom: 100px;
       width: 100%;
-      height:60px;
+      height: 60px;
     }
   </style>
 </head>
@@ -64,35 +66,44 @@ $showalert = false;
   </nav>
 
   <?php
-    if(isset($_POST['sendmail'])) {
-      $selector = bin2hex(random_bytes(8));
-      $token = random_bytes(32);
-      $url = "http://nounlinkup.dns7554.webfactional.com/change-password.php?selector=". $selector. "&validator=". bin2hex($token);
-      $expires = date("U") + 1800;
-      
-      $email = $_POST['email'];
+  if (isset($_POST['sendmail'])) {
+    $selector = bin2hex(random_bytes(8));
+    $token = random_bytes(32);
+    $url = "http://nounlinkup.dns7554.webfactional.com/change-password.php?selector=" . $selector . "&validator=" . bin2hex($token);
+    $expires = date("U") + 1800;
+
+    $email = $_POST['email'];
+    $sql = mysqli_query($conn, "SELECT * FROM users where email = '$email'");
+
+    if (mysqli_num_rows($sql) > 0) {
       $query1 = "DELETE FROM pwdReset WHERE pwdResetEmail='$email'";
       $result1 = mysqli_query($conn, $query1);
 
       $hashedToken = password_hash($token, PASSWORD_DEFAULT);
       $query2 = "INSERT INTO pwdReset (pwdResetEmail, pwdResetSelector, pwdResetToken, pwdResetExpires)
-        VALUES ('$email', '$selector', '$hashedToken', '$expires')";
+          VALUES ('$email', '$selector', '$hashedToken', '$expires')";
       $result2 = mysqli_query($conn, $query2);
 
       $to = $email;
       $subject = "Reset your password for NounLinkup";
       $message = "<p>We recieved a password reset request. The link to reset your password is below.
-          If you didn't make this request, you can just ignore this email</p>";
+            If you didn't make this request, you can just ignore this email</p>";
       $message .= "<p>Here is your password reset link: <br/>";
       $message .= "<a href='" . $url . "'>" . $url . "</a></p>";
-      
+
       $headers = "from NounLinkup <oshalusijohn@gmail.com> \r\n";
       $headers .= "Reply-To: oshalusijohn@gmail.com\r\n";
-      $headers .= "Content-type:text/html\r\n";
+      $headers .= "Content-Type:text/html; charset=utf-8\r\n";
 
-      mail($to, $subject, $message, $headers);
-      $showalert = true;
+      if (mail($to, $subject, $message, $headers)) {
+        $sentAlert = true;
+      } else {
+        $sentFailedAlert = true;
+      }
+    } else {
+      $emailNotFoundAlert = true;
     }
+  }
   ?>
 
   <div class="container" id="login">
@@ -103,15 +114,30 @@ $showalert = false;
           <h4>Enter your email to retrieve your password</h4>
         </div>
         <div>
-          <?php 
-            if($showalert == true) {
-              echo "
+          <?php
+          if ($emailNotFoundAlert == true) {
+            echo "
+                <div class='alert alert-danger'>
+                  <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>
+                  This email does not exist</a>.
+                </div>";
+          }
+
+          if ($sentAlert == true) {
+            echo "
                 <div class='alert alert-success'>
                   <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>
                   Check your email to change your password</a>.
                 </div>";
-            }
+          } else if ($sentFailedAlert == true) {
+            echo "
+                <div class='alert alert-danger'>
+                  <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>
+                  Could not sent email</a>.
+                </div>";
+          }
           ?>
+
           <form method="post" action="" data-parsley-validate id="login-form">
             <div class="form-group">
               <div class="form-label-group">
