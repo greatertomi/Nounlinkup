@@ -58,7 +58,7 @@ if ($email == "") {
 			text-align: right;
 		}
 
-		#selectid {
+		.selects {
 			margin-left: 8px;
 		}
 
@@ -91,6 +91,40 @@ if ($email == "") {
 		#autocomplete li:hover {
 			color: #000000;
 			cursor: pointer;
+		}
+
+
+		@media (max-width: 767px) {
+			#searchCaption {
+				display: none;
+			}
+
+			#searchLevel {
+				display: none !important;
+			}
+
+			#searchFaculty {
+				display: none !important;
+			}
+
+			#searchDepartment {
+				width: 30% !important;
+				margin-right: 8px !important;
+			}
+
+			#searchCentre {
+				width: 40% !important;
+				margin-right: 8px !important;
+			}
+
+			#paramSearch {
+				display: block;
+			}
+
+			.search-options {
+				padding-left: 0;
+				margin-left: 0;
+			}
 		}
 	</style>
 </head>
@@ -284,8 +318,8 @@ if ($email == "") {
 						</div>
 
 						<div class="search-options clearfix">
-							Search by
-							<select class="form-control input-sm level" style="display:inline-block; width:9%;" id="selectid">
+							<span id="searchCaption">Search by</span>
+							<select class="form-control input-sm level selects" id="searchLevel" style="display:inline-block; width:9%;">
 								<option selected="true" value=null>Level</option>
 								<option>100L</option>
 								<option>200L</option>
@@ -293,7 +327,7 @@ if ($email == "") {
 								<option>400L</option>
 								<option>500L</option>
 							</select>
-							<select class="form-control input-sm dept" style="display:inline-block; width:26%;" id="selectid">
+							<select class="form-control input-sm dept selects" id="searchDepartment" style="display:inline-block; width:26%;">
 								<option selected="true" value=null>Department</option>
 								<?php
 
@@ -307,7 +341,7 @@ if ($email == "") {
 								}
 								?>
 							</select>
-							<select class="form-control input-sm faculty" style="display:inline-block; width:20%" id="selectid">
+							<select class="form-control input-sm faculty selects" id="searchFaculty" style="display:inline-block; width:20%">
 								<option selected="true" value=null>Faculty</option>
 								<?php
 
@@ -321,7 +355,7 @@ if ($email == "") {
 								}
 								?>
 							</select>
-							<select class="form-control input-sm scentre" style="display:inline-block; width:26%;" id="selectid">
+							<select class="form-control input-sm scentre selects" id="searchCentre" style="display:inline-block; width:26%;">
 								<option selected="true" value=null>Study Centre</option>
 								<?php
 								$sql = "SELECT * FROM study_centre";

@@ -83,7 +83,14 @@ if ($email == "") {
 
 		.alert-success {
 			position: absolute;
-			margin-left: 50%;
+			margin-left: 25%;
+		}
+
+		@media (max-width: 767px) {
+			.alert-success {
+				position: absolute;
+				margin-left: 40%;
+			}
 		}
 	</style>
 
@@ -301,9 +308,9 @@ if ($email == "") {
 			if ($result2) {
 				echo "
 						<div class='alert alert-success'>
-							<button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>
-							Your profile has been successfully edited <a href='profile.php' class='alert-link'>View Profile</a>.
-						</div>";
+						<button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>
+						Your profile has been successfully edited</a>.
+					</div>";
 			}
 		}
 		?>
@@ -315,7 +322,7 @@ if ($email == "") {
 					<li class="active">Profile</li>
 				</ul>
 			</div>
-			<!--breadcrumb-->
+
 			<div class="col-md-8">
 				<form class="form-horizontal form-border" method="post" action="" enctype="multipart/form-data" data-parsley-validate>
 					<div class="panel-heading">

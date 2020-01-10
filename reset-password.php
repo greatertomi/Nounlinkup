@@ -3,15 +3,12 @@ session_start();
 if (isset($_SESSION['matricno'])) {
   header("location:dashboard.php");
 }
-if(isset($_GET['newpwd'])) {
-  $pwdUpdated = $_GET['newpwd'];
-}
 
 include("functions.php");
 include("footer.php");
 
 $conn = db_connect();
-date_default_timezone_set('Africa/Lagos');
+$showalert = false;
 ?>
 <html>
 
@@ -34,51 +31,16 @@ date_default_timezone_set('Africa/Lagos');
       font-weight: 600;
     }
 
-    #Lforgot {
-      color: #328130;
-      font-weight: 700;
-    }
-
-    #LRegister {
-      margin-left: 15px;
-    }
-
-    #highlight {
-      margin-bottom: 25px;
+    #footerDiv {
+      position:absolute;
+      bottom:100px;
+      width: 100%;
+      height:60px;
     }
   </style>
 </head>
 
 <body>
-  <?php
-  if (isset($_POST["login"])) {
-    $matricno = $_POST['matricno'];
-    $password = $_POST['password'];
-
-    $query = "select* from users where matricno = '$matricno' and password = '$password'";
-    $result = mysqli_query($conn, $query) or die("Could not query database");
-    $row = mysqli_fetch_array($result);
-    $matricno = $row['matricno'];
-    //echo $matricno;
-    if (mysqli_num_rows($result) > 0) {
-      $time = date("Y-m-d H:i:s");
-      $query2 = "insert into login_details (matricno, last_activity) values ('$matricno', '$time')";
-      $result2 = mysqli_query($conn, $query2) or die("Could not insert datas into login details table");
-      $query3 = mysqli_query($conn, "select * from login_details where matricno = '$matricno' and last_activity = '$time'");
-      $row2 = mysqli_fetch_array($query3);
-      $_SESSION['matricno'] = $matricno;
-      $_SESSION['login_id'] = $row2['login_id'];
-
-      ?>
-      <script>
-        window.open("dashboard.php", "_self", false);
-      </script>
-  <?php
-    } else
-      $error = "<span id = 'error'>User record does not exist</span>";
-  }
-  ?>
-
   <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="loginNav">
     <div class="container">
       <a class="navbar-brand js-scroll-trigger" href="index.php">NOUN Linkup</a>
@@ -87,8 +49,8 @@ date_default_timezone_set('Africa/Lagos');
       </button>
       <div class="collapse navbar-collapse" id="navbarResponsive">
         <ul class="navbar-nav ml-auto">
-          <li class="nav-item active">
-            <a class="nav-link js-scroll-trigger" href="#">Login</a>
+          <li class="nav-item">
+            <a class="nav-link js-scroll-trigger" href="login.php">Login</a>
           </li>
           <li class="nav-item">
             <a class="nav-link js-scroll-trigger" href="register.php">Register</a>
@@ -101,47 +63,63 @@ date_default_timezone_set('Africa/Lagos');
     </div>
   </nav>
 
+  <?php
+    if(isset($_POST['sendmail'])) {
+      $selector = bin2hex(random_bytes(8));
+      $token = random_bytes(32);
+      $url = "http://nounlinkup.dns7554.webfactional.com/change-password.php?selector=". $selector. "&validator=". bin2hex($token);
+      $expires = date("U") + 1800;
+      
+      $email = $_POST['email'];
+      $query1 = "DELETE FROM pwdReset WHERE pwdResetEmail='$email'";
+      $result1 = mysqli_query($conn, $query1);
+
+      $hashedToken = password_hash($token, PASSWORD_DEFAULT);
+      $query2 = "INSERT INTO pwdReset (pwdResetEmail, pwdResetSelector, pwdResetToken, pwdResetExpires)
+        VALUES ('$email', '$selector', '$hashedToken', '$expires')";
+      $result2 = mysqli_query($conn, $query2);
+
+      $to = $email;
+      $subject = "Reset your password for NounLinkup";
+      $message = "<p>We recieved a password reset request. The link to reset your password is below.
+          If you didn't make this request, you can just ignore this email</p>";
+      $message .= "<p>Here is your password reset link: <br/>";
+      $message .= "<a href='" . $url . "'>" . $url . "</a></p>";
+      
+      $headers = "from NounLinkup <oshalusijohn@gmail.com> \r\n";
+      $headers .= "Reply-To: oshalusijohn@gmail.com\r\n";
+      $headers .= "Content-type:text/html\r\n";
+
+      mail($to, $subject, $message, $headers);
+      $showalert = true;
+    }
+  ?>
+
   <div class="container" id="login">
     <div class="row">
       <div class="col-md-4"></div>
       <div class="col-md-4">
         <div>
-          <h3>Log In to LinkUp</h3>
+          <h4>Enter your email to retrieve your password</h4>
         </div>
         <div>
-          <?php
-            if(isset($pwdUpdated)) {
+          <?php 
+            if($showalert == true) {
               echo "
                 <div class='alert alert-success'>
                   <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>
-                  You password has been updated successfully.</a>.
+                  Check your email to change your password</a>.
                 </div>";
             }
           ?>
           <form method="post" action="" data-parsley-validate id="login-form">
             <div class="form-group">
-              <label for="matricNo">Matric number:</label>
               <div class="form-label-group">
-                <input type="text" id="matricno" name="matricno" class="form-control" data-parsley-required-message="Your matric number is required" required="" autofocus="autofocus">
+                <input type="email" id="email" name="email" class="form-control" data-parsley-required-message="Your email address is required" required="" autofocus="autofocus" placeholder="Enter your email address">
               </div>
             </div>
-            <div class="form-group">
-              <label for="matricNo">Password:</label>
-              <div class="form-label-group">
-                <input type="password" id="password" name="password" class="form-control" data-parsley-required-message="You need a password to login" required="">
-              </div>
-            </div>
-            <div class="form-group">
-              <?php
-              if (isset($error)) {
-                echo $error;
-              }
-              ?>
-            </div>
-            <div id="highlight"><a href="reset-password.php" id="Lforgot">I forgot my password</a></div>
-            <input type="submit" id="btnlogin" name="login" value="LOGIN">
+            <input type="submit" id="btnlogin" name="sendmail" value="SEND EMAIL">
           </form>
-          <div id="highlight" class="text-center"><a href="register.php" id="Lregister">Not a member yet? Sign up here</a></div>
         </div>
       </div>
     </div>
@@ -160,7 +138,9 @@ date_default_timezone_set('Africa/Lagos');
     });
   </script>
 
-  <?php echo footer(); ?>
+  <div id="footerDiv">
+    <?php echo footer(); ?>
+  </div>
 </body>
 
 </html>

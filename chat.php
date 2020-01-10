@@ -81,6 +81,10 @@ if ($email == "") {
 			padding-left: 0px;
 		}
 
+		.friend-list {
+			font-size: 12px;
+		}
+
 		.gritter-danger {
 			margin-top: 75px;
 		}
