@@ -32,13 +32,6 @@ $emailNotFoundAlert = false;
       margin-bottom: 30px;
       font-weight: 600;
     }
-
-    #footerDiv {
-      position: absolute;
-      bottom: 100px;
-      width: 100%;
-      height: 60px;
-    }
   </style>
 </head>
 
@@ -70,7 +63,7 @@ $emailNotFoundAlert = false;
     $selector = bin2hex(random_bytes(8));
     $token = random_bytes(32);
     $url = "http://nounlinkup.dns7554.webfactional.com/change-password.php?selector=" . $selector . "&validator=" . bin2hex($token);
-    $expires = date("U") + 1800;
+    $expires = date("U") + 7000;
 
     $email = $_POST['email'];
     $sql = mysqli_query($conn, "SELECT * FROM users where email = '$email'");
@@ -91,9 +84,10 @@ $emailNotFoundAlert = false;
       $message .= "<p>Here is your password reset link: <br/>";
       $message .= "<a href='" . $url . "'>" . $url . "</a></p>";
 
-      $headers = "from NounLinkup <oshalusijohn@gmail.com> \r\n";
+      $headers = "MIME-Version:1.0\r\n";
+      $headers .= "Content-Type:text/html; charset=iso-8859-1\r\n";
+      $headers .= "from NounLinkup <oshalusijohn@gmail.com> \r\n";
       $headers .= "Reply-To: oshalusijohn@gmail.com\r\n";
-      $headers .= "Content-Type:text/html; charset=utf-8\r\n";
 
       if (mail($to, $subject, $message, $headers)) {
         $sentAlert = true;

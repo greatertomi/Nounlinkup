@@ -29,13 +29,6 @@ $conn = db_connect();
       margin-bottom: 30px;
       font-weight: 600;
     }
-
-    #footerDiv {
-      position:absolute;
-      bottom:100px;
-      width: 100%;
-      height:60px;
-    }
   </style>
 </head>
 
@@ -70,39 +63,38 @@ $conn = db_connect();
           <h4>Change Password</h4>
         </div>
         <?php
-          $selector = $_GET['selector'];
-          $validator = $_GET['validator'];
+        $selector = $_GET['selector'];
+        $validator = $_GET['validator'];
 
-          if(empty($selector) || empty($validator)) {
-            echo "Could not validate your request";
-          }
-          else {
-            if(ctype_xdigit($selector) !== false && ctype_xdigit($validator) !== false) {
+        if (empty($selector) || empty($validator)) {
+          echo "Could not validate your request";
+        } else {
+          if (ctype_xdigit($selector) !== false && ctype_xdigit($validator) !== false) {
             ?>
-              <div>
-                <form method="post" action="change-password2.php" data-parsley-validate id="login-form">
-                  <input type="hidden" name="selector" value="<?php echo $selector ?>" />
-                  <input type="hidden" name="validator" value="<?php echo $validator ?>" />
-        
-                  <div class="form-group">
-                    <label for="matricNo">New password:</label>
-                    <div class="form-label-group">
-                      <input type="password" id="password1" name="password1" class="form-control" data-parsley-minlength="6" data-parsley-minlength-message="Password must be atleast 6 characters" required="" autofocus="autofocus">
-                    </div>
-                  </div>
+            <div>
+              <form method="post" action="change-password2.php" data-parsley-validate id="login-form">
+                <input type="hidden" name="selector" value="<?php echo $selector ?>" />
+                <input type="hidden" name="validator" value="<?php echo $validator ?>" />
 
-                  <div class="form-group">
-                    <label for="matricNo">Confirm new password:</label>
-                    <div class="form-label-group">
-                      <input type="password" id="password2" name="password2" class="form-control" data-parsley-equalto="#password1" data-parsley-equalto-message="Not the same as the new password field">
-                    </div>
+                <div class="form-group">
+                  <label for="matricNo">New password:</label>
+                  <div class="form-label-group">
+                    <input type="password" id="password1" name="password1" class="form-control" data-parsley-minlength="6" data-parsley-minlength-message="Password must be atleast 6 characters" required="" autofocus="autofocus">
                   </div>
-                  <input type="submit" id="btnlogin" name="savepassword" value="SAVE NEW PASSWORD">
-                </form>
-              </div>
-            <?php
-            }
+                </div>
+
+                <div class="form-group">
+                  <label for="matricNo">Confirm new password:</label>
+                  <div class="form-label-group">
+                    <input type="password" id="password2" name="password2" class="form-control" data-parsley-equalto="#password1" data-parsley-equalto-message="Not the same as the new password field">
+                  </div>
+                </div>
+                <input type="submit" id="btnlogin" name="savepassword" value="SAVE NEW PASSWORD">
+              </form>
+            </div>
+        <?php
           }
+        }
         ?>
       </div>
     </div>
