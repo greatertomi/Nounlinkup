@@ -61,7 +61,7 @@ if (isset($_SESSION['matricno'])) {
 			}
 		}
 
-		@media (min-width: 730px) {
+		@media (max-width: 730px) {
 			#regsubmit {
 				width: 300px;
 			}

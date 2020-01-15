@@ -6,10 +6,6 @@ html {
   height: 100%;
 }
 
-#regsubmit {
-  cursor: pointer;
-}
-
 body {
   font-family: 'PT Sans', sans-serif;
   font-size: 14px;
@@ -130,7 +126,6 @@ img::-moz-selection {
 
 #mainNav .navbar-nav > li.nav-item > a.nav-link.active,
 #mainNav .navbar-nav > li.nav-item > a.nav-link:focus.active {
-  color: #328130 !important;
   background-color: transparent;
 }
 
@@ -413,7 +408,7 @@ footer.footer a:hover {
 }
 
 #regsubmit {
-  width: 500px;
+  width: 430px;
   height: 50px;
   background-color: #328130;
   color: #f2f2f2;
@@ -421,6 +416,7 @@ footer.footer a:hover {
   font-weight: 600;
   border: none;
   margin-left: 40px;
+  cursor: pointer;
 }
 
 form .form-control {

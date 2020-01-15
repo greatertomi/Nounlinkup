@@ -46,11 +46,6 @@ while ($row = mysqli_fetch_array($result)) {
 			text-align: right;
 		}
 
-		.jumbotron {
-			background-color: #d25d41;
-			color: white;
-		}
-
 		#fa {
 			color: #666666;
 			margin-left: 6px;
@@ -61,8 +56,12 @@ while ($row = mysqli_fetch_array($result)) {
 		}
 
 		th {
-			background-color: #d25d41;
+			background-color: #328130;
 			color: white;
+		}
+
+		.nav-link.active {
+			color: rgba(255, 255, 255, 0.7) !important;
 		}
 	</style>
 

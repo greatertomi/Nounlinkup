@@ -1,3 +1,6 @@
+<?php
+include("footer.php");
+?>
 <html>
 
 <head>
@@ -20,8 +23,7 @@
 		<div class="container">
 			<a class="navbar-brand" href="index.html">Linkup Blog</a>
 			<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-				Menu
-				<i class="fa fa-bars"></i>
+				<span class="navbar-toggler-icon"></span>
 			</button>
 			<div class="collapse navbar-collapse" id="navbarResponsive">
 				<ul class="navbar-nav ml-auto">
@@ -64,11 +66,7 @@
 
 	<hr>
 
-	<footer>
-		<div class="container">
-			<p class="copyright text-muted">Copyright &copy; Oluwalusi John 2018</p>
-		</div>
-	</footer>
+	<?php echo footer(); ?>
 
 	<script src="tools/js/jquery.js"></script>
 	<script src="tools/js/bootstrap.bundle.js"></script>

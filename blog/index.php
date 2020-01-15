@@ -1,5 +1,6 @@
 <?php
 include("functions.php");
+include("footer.php");
 $conn = db_connect();
 ?>
 <html>
@@ -16,6 +17,12 @@ $conn = db_connect();
   <link href="tools/css/font-awesome.css" rel="stylesheet" type="text/css">
 
   <link href="tools/css/clean-blog.css" rel="stylesheet">
+  <style>
+    #btnPagination {
+      background-color: #328130;
+      color: white;
+    }
+  </style>
 </head>
 
 <body>
@@ -23,8 +30,7 @@ $conn = db_connect();
     <div class="container">
       <a class="navbar-brand" href="index.php">Linkup Blog</a>
       <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-        Menu
-        <i class="fa fa-bars"></i>
+        <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarResponsive">
         <ul class="navbar-nav ml-auto">
@@ -90,7 +96,7 @@ $conn = db_connect();
         ?>
         <!-- Pager -->
         <div class="clearfix">
-          <a class="btn btn-primary float-right" href="#">Older Posts &rarr;</a>
+          <a class="btn float-right" href="#" id="btnPagination">Older Posts &rarr;</a>
         </div>
       </div>
     </div>
@@ -98,11 +104,7 @@ $conn = db_connect();
 
   <hr>
 
-  <footer>
-    <div class="container">
-      <p class="copyright text-muted">Copyright &copy; NOUN Linkup 2019</p>
-    </div>
-  </footer>
+  <?php echo footer(); ?>
 
   <script src="tools/js/jquery.js"></script>
   <script src="tools/js/bootstrap.bundle.js"></script>
